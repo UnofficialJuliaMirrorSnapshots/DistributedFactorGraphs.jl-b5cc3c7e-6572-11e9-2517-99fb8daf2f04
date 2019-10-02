@@ -1,6 +1,6 @@
-export sortVarNested
+
+export sortVarNested, sortDFG
 export isPrior, lsfPriors
-export getData
 export getVariableType, getSofttype
 export getFactorType, getfnctype
 export lsTypes, lsfTypes
@@ -92,10 +92,20 @@ end
 """
     $SIGNATURES
 
-Retrieve data structure stored in a node.
+Sort variable (factor) lists in a meaningful way, for example `[:april;:x1_3;:x1_6;]`
+
+Notes
+- Not fool proof, but does better than native sort.
+
+Example
+
+`sortDFG(ls(dfg))`
+
+Related
+
+ls, lsf
 """
-getData(v::DFGFactor)::GenericFunctionNodeData = v.data
-getData(v::DFGVariable; solveKey::Symbol=:default)::VariableNodeData = v.solverDataDict[solveKey]
+sortDFG(vars::Vector{Symbol})::Vector{Symbol} = sortVarNested(vars)
 
 """
     $SIGNATURES
