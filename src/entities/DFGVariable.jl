@@ -15,6 +15,8 @@ mutable struct VariableNodeData
   inferdim::Float64
   ismargin::Bool
   dontmargin::Bool
+  # Tonio surprise TODO
+  # frontalonly::Bool
   # A valid, packable default constructor is needed.
   VariableNodeData() = new(zeros(1,1), zeros(1,1), Symbol[], Int[], 0, false, :NOTHING, Symbol[], "", false, false, false, false)
   VariableNodeData(x1::Array{Float64,2},
@@ -83,7 +85,7 @@ end
     $(SIGNATURES)
 Fundamental structure for a DFG variable.
 """
-mutable struct DFGVariable <: DFGNode
+mutable struct DFGVariable <: AbstractDFGVariable
     label::Symbol
     timestamp::DateTime
     tags::Vector{Symbol}
@@ -130,3 +132,21 @@ internalId(v::DFGVariable) = v._internalId
 # Todo: Complete this.
 smallData(v::DFGVariable) = v.smallData
 bigData(v::DFGVariable) = v.bigData
+
+"""
+    $(SIGNATURES)
+Structure for first-class citizens of a DFGVariable.
+"""
+mutable struct DFGVariableSummary <: AbstractDFGVariable
+    label::Symbol
+    timestamp::DateTime
+    tags::Vector{Symbol}
+    estimateDict::Dict{Symbol, Dict{Symbol, VariableEstimate}}
+    _internalId::Int64
+end
+label(v::DFGVariableSummary) = v.label
+timestamp(v::DFGVariableSummary) = v.timestamp
+tags(v::DFGVariableSummary) = v.tags
+estimates(v::DFGVariableSummary) = v.estimateDict
+estimate(v::DFGVariableSummary, key::Symbol=:default) = haskey(v.estimateDict, key) ? v.estimateDict[key] : nothing
+internalId(v::DFGVariableSummary) = v._internalId
