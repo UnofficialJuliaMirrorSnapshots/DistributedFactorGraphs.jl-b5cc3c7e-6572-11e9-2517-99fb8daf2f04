@@ -37,15 +37,22 @@ end
     include("plottingTest.jl")
 end
 
-@testset "SummaryDFG test" begin
-    @info "Testing LightDFG Variable and Factor Subtypes"
-    include("LightDFGSummaryTypes.jl")
+@testset "LightDFG subtype tests" begin
+    for type in [(var=DFGVariableSummary, fac=DFGFactorSummary), (var=SkeletonDFGVariable,fac=SkeletonDFGFactor)]
+        @testset "$(type.var) and $(type.fac) tests" begin
+            @info "Testing $(type.var) and $(type.fac)"
+            global VARTYPE = type.var
+            global FACTYPE = type.fac
+            include("LightDFGSummaryTypes.jl")
+        end
+    end
 end
-
 
 if get(ENV, "IIF_TEST", "") == "true"
 
-    Pkg.add("IncrementalInference")
+    # Pkg.add("IncrementalInference")
+    # TODO: Remove this once we move to v0.5.0
+    Pkg.add(PackageSpec(name="IncrementalInference", rev="enhancement/compare_move_dfg"))
     @info "------------------------------------------------------------------------"
     @info "These tests are using IncrementalInference to do additional driver tests"
     @info "------------------------------------------------------------------------"
@@ -70,6 +77,12 @@ if get(ENV, "IIF_TEST", "") == "true"
             @info "Testing Driver: $(api)"
             global dfg = deepcopy(api)
             include("iifInterfaceTests.jl")
+        end
+
+        @testset "FileDFG Testing Driver: $(typeof(api))" begin
+            @info "FileDFG Testing Driver: $(typeof(api))"
+            global dfg = deepcopy(api)
+            include("fileDFGTests.jl")
         end
     end
 else
