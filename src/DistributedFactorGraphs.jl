@@ -44,6 +44,7 @@ export pack, unpack
 export packVariable, unpackVariable, packFactor, unpackFactor
 
 #PPE exports
+export AbstractPointParametricEst
 export MeanMaxPPE
 
 #Interfaces
@@ -57,6 +58,7 @@ export getSummary, getSummaryGraph
 
 # Comparisons
 export
+    compare,
     compareField,
     compareFields,
     compareAll,
